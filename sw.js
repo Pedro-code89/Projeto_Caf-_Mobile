@@ -7,7 +7,7 @@
 
 // Mude o número da versão sempre que alterar a lista de arquivos abaixo
 const PREFIXO_CACHE = "cafe-mobile-" + self.registration.scope;
-const CACHE = PREFIXO_CACHE + "v2";
+const CACHE = PREFIXO_CACHE + "v3";
 
 const ARQUIVOS = [
   "./",

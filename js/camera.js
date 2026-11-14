@@ -1,5 +1,5 @@
 // ==========================================================
-// camera.js - Dia 5: câmera do celular e galeria de fotos
+// camera.js - Dia 6: câmera, galeria e exclusão de fotos
 // RECURSO DE HARDWARE: câmera (frontal e traseira)
 // Exige HTTPS (ou localhost) e permissão do usuário.
 // ==========================================================
@@ -117,7 +117,7 @@ function salvarFotos() {
       if (erro.name === "QuotaExceededError" && fotos.length > 1) {
         fotos.pop();
       } else {
-        mostrarAviso("Não foi possível salvar a foto. Confira o armazenamento do navegador.");
+        mostrarAviso("Não foi possível atualizar a galeria. Confira o armazenamento do navegador.");
         return false;
       }
     }
@@ -201,6 +201,25 @@ inputFoto.addEventListener("change", function () {
   inputFoto.value = ""; // permite escolher a mesma foto de novo
 });
 
+// Dia 6: pede confirmação antes de apagar e guarda a mudança no localStorage.
+function apagarFoto(foto) {
+  if (!window.confirm("Apagar esta foto da galeria?")) {
+    return;
+  }
+
+  const fotosAnteriores = fotos.slice();
+  fotos = fotos.filter(function (item) {
+    return item !== foto;
+  });
+
+  if (!salvarFotos()) {
+    fotos = fotosAnteriores;
+    return;
+  }
+  mostrarGaleria();
+  mostrarAviso("Foto apagada da galeria");
+}
+
 function mostrarGaleria() {
   galeria.innerHTML = "";
   document.querySelector("#titulo-galeria").textContent = "Galeria (" + fotos.length + ")";
@@ -216,12 +235,16 @@ function mostrarGaleria() {
       <small></small>
       <div class="foto-acoes">
         <button class="btn-compartilhar-foto" aria-label="Compartilhar foto">📤</button>
+        <button type="button" class="btn-apagar-foto" aria-label="Apagar foto">Apagar</button>
       </div>
     `;
     // textContent exibe a legenda como texto, mesmo se ela contiver símbolos HTML.
     div.querySelector("small").textContent = foto.legenda || foto.data;
     div.querySelector(".btn-compartilhar-foto").addEventListener("click", function () {
       compartilharFoto(foto); // função que está em pwa.js
+    });
+    div.querySelector(".btn-apagar-foto").addEventListener("click", function () {
+      apagarFoto(foto);
     });
     galeria.appendChild(div);
   }
